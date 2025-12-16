@@ -1,8 +1,9 @@
 import express from 'express';
-import {handleGenerateShortUrl} from '../controllers/urlController.js';
+import {handleGenerateShortUrl, redirectToUrl} from '../controllers/urlController.js';
 
 const router = express.Router();
 
 router.post('/', handleGenerateShortUrl);
+router.get('/:shortUrl', redirectToUrl);
 
 export default router;
