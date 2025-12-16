@@ -2,7 +2,6 @@ import express from "express";
 import urlRoutes from "./routes/urlRoute.js";
 import connectMongoDB from "./config/mongoDB.js";
 import dotenv from "dotenv";
-import Url from "./models/urlModel.js";
 
 dotenv.config();
 

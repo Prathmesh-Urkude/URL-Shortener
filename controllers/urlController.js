@@ -15,7 +15,7 @@ async function handleGenerateShortUrl(req, res) {
     return res.json({id: shortUrl});
 }
 
-async function redirectToUrl(req, res) {
+async function handleRedirectToUrl(req, res) {
     const shortUrl = req.params.shortUrl;
     const entry = await Url.findOneAndUpdate({
         shortUrl: shortUrl
@@ -26,4 +26,12 @@ async function redirectToUrl(req, res) {
     res.redirect(entry.redirectUrl);
 }
 
-export {handleGenerateShortUrl, redirectToUrl};
+async function handleGetAnalytics(req, res) {
+    const shortUrl = req.params.shortUrl;
+    const history = await Url.findOne({
+        shortUrl: shortUrl
+    });
+    return res.json({totalClicks: history.visitHistory.length, analytics: history.visitHistory});
+}
+
+export {handleGenerateShortUrl, handleRedirectToUrl, handleGetAnalytics};
