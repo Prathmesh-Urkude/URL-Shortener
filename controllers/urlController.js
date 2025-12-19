@@ -1,5 +1,6 @@
 import {nanoid} from 'nanoid';
 import Url from '../models/urlModel.js';
+import redisClient from '../models/cacheModel.js';
 
 async function handleGenerateShortUrl(req, res) {
     const body = req.body;
@@ -12,10 +13,12 @@ async function handleGenerateShortUrl(req, res) {
         visitHistory: [],
     });
 
+    redisClient.setEx(shortUrl, 3600, body.url);
     return res.json({id: shortUrl});
 }
 
 async function handleRedirectToUrl(req, res) {
+    console.time("mongo");
     const shortUrl = req.params.shortUrl;
     const entry = await Url.findOneAndUpdate({
         shortUrl: shortUrl
@@ -23,6 +26,8 @@ async function handleRedirectToUrl(req, res) {
     );
     if(!entry) return res.status(404).send("Short URL not found");
     
+    redisClient.setEx(shortUrl, 3600, entry.redirectUrl);
+    console.timeEnd("mongo");
     res.redirect(entry.redirectUrl);
 }
 
